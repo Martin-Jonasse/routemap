@@ -14,21 +14,41 @@
             #map {
                 height: 800px;
             }
+            .route-button {
+                background-color: #4CAF50;
+                border: none;
+                color: white;
+                padding: 15px 32px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                margin: 4px 2px;
+                cursor: pointer;
+            }
         </style>
 
         <script	src="https://code.jquery.com/jquery-3.1.1.js"
-                   integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="
-                   crossorigin="anonymous">
+                integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="
+                crossorigin="anonymous">
         </script>
     </head>
 
     <body>
         <div style="padding: 0px;">
-  
-        <div id="map"></div>
+            <div id="routes" style="padding: 0px;">
+                <button type="button"
+                        class="route-button"
+                        onclick="alert('not implemented yet!')">OSRM Route</button>
+                <button type="button"
+                        class="route-button"
+                        style="background-color: cornflowerblue"
+                        onclick="alert('not implemented yet!')">Google Route</button>
+            </div>
+            <div id="map"></div>
+        </div>
 
-        <!--- add a JavaScript Api-Key in the statement below and rund this page to verify the key as correct --->
-        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBCC8dCJLV18-8a8HPBLMVLa6nGSjVhGg4"></script>
+        <link rel="import" href="googleapis.html">
         <script>
 
             function initMap(map){
@@ -50,11 +70,10 @@
             }
 
             $(document).ready(function () {
-
                 // build map ----------
                 var map;
                 initMap(map);
-                
+
                 // set route waypoints ----------
                 var fromLat = 47.174322; // Seemattstrasse
                 var fromLng = 8.452194;
@@ -66,8 +85,7 @@
                 var steps = getRoute(waypoints);
                 var dummy='stop';
             });
-        </script>
 
-        </div>
+        </script>
     </body>
 </html>
