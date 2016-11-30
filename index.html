@@ -23,22 +23,48 @@
     </head>
 
     <body>
-        <div style="padding: 10px;">
+        <div style="padding: 0px;">
   
         <div id="map"></div>
 
         <!--- add a JavaScript Api-Key in the statement below and rund this page to verify the key as correct --->
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBCC8dCJLV18-8a8HPBLMVLa6nGSjVhGg4"></script>
         <script>
+
+            function initMap(map){
+                var myLatlng = new google.maps.LatLng(47.178078,8.504885);
+                var myOptions = {
+                    zoom: 13,
+                    center: myLatlng,
+                    mapTypeId: 'roadmap'
+                };
+                map = new google.maps.Map(document.getElementById('map'), myOptions);
+            }
+
+            function getRoute(waypoints){
+                var baseUrl="http://router.project-osrm.org/route/v1/driving/";
+                var options="?steps=true&geometries=geojson&overview=false";
+                var url;
+                url=baseUrl+waypoints+options;
+                var dummy='stop';
+            }
+
             $(document).ready(function () {
+
+                // build map ----------
                 var map;
-                map = new google.maps.Map(
-                        document.getElementById('map'),
-                        {
-                            center: {lat: 47.178078, lng: 8.504885},
-                            zoom: 13
-                        }
-                );
+                initMap(map);
+                
+                // set route waypoints ----------
+                var fromLat = 47.174322; // Seemattstrasse
+                var fromLng = 8.452194;
+                var toLat = 47.161751; // Hofstrasse
+                var toLng = 8.516463;
+                var waypoints = fromLng+","+fromLat+";"+toLng+","+toLat;
+
+                // get osrm route ----------
+                var steps = getRoute(waypoints);
+                var dummy='stop';
             });
         </script>
 
