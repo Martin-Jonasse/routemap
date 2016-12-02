@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Simple Map</title>
+        <title>Shared Ride Map</title>
         <meta name="viewport" content="initial-scale=1.0">
         <meta charset="utf-8">
 
@@ -14,18 +14,6 @@
             #map {
                 height: 700px;
             }
-            .route-button {
-                background-color: #4CAF50;
-                border: none;
-                color: white;
-                padding: 15px 32px;
-                text-align: center;
-                text-decoration: none;
-                display: inline-block;
-                font-size: 16px;
-                margin: 4px 2px;
-                cursor: pointer;
-            }
         </style>
 
         <script	src="https://code.jquery.com/jquery-3.1.1.js"
@@ -36,58 +24,66 @@
 
     <body>
         <div style="padding: 0px;">
-            <div id="routes" style="padding: 0px;">
-                <button type="button"
-                        class="route-button"
-                        onclick="alert('not implemented yet!')">OSRM Route</button>
-                <button type="button"
-                        class="route-button"
-                        style="background-color: cornflowerblue"
-                        onclick="alert('not implemented yet!')">Google Route</button>
-            </div>
             <div style="padding: 3px;">
                 <div id="map"></div>
             </div>
         </div>
 
         <link rel="import" href="googleapis.html">
+        <script src="js/osrm.js"></script>
         <script>
 
-            function initMap(map){
-                var myLatlng = new google.maps.LatLng(47.178078,8.504885);
-                var myOptions = {
-                    zoom: 13,
-                    center: myLatlng,
-                    mapTypeId: 'roadmap'
-                };
-                map = new google.maps.Map(document.getElementById('map'), myOptions);
-            }
-
-            function getRoute(waypoints){
-                var baseUrl="http://router.project-osrm.org/route/v1/driving/";
-                var options="?steps=true&geometries=geojson&overview=false";
-                var url;
-                url=baseUrl+waypoints+options;
-                var dummy='stop';
-            }
-
             $(document).ready(function () {
-                // build map ----------
-                var map;
-                initMap(map);
 
-                // set route waypoints ----------
-                var fromLat = 47.174322; // Seemattstrasse
-                var fromLng = 8.452194;
-                var toLat = 47.161751; // Hofstrasse
-                var toLng = 8.516463;
-                var waypoints = fromLng+","+fromLat+";"+toLng+","+toLat;
+                function initMap(){
+                    var directionsService = new google.maps.DirectionsService;
+                    var directionsDisplay = new google.maps.DirectionsRenderer;
+                    var myLatlng = new google.maps.LatLng(47.178078,8.504885);
+                    var myOptions = {
+                        zoom: 13,
+                        center: myLatlng,
+                        mapTypeId: 'roadmap'
+                    };
+                    var map = new google.maps.Map(document.getElementById('map'), myOptions);
+                    directionsDisplay.setMap(map);
+                    calculateAndDisplayRoute(directionsService, directionsDisplay);
+                }
 
-                // get osrm route ----------
-                var steps = getRoute(waypoints);
-                var dummy='stop';
-            });
+                function calculateAndDisplayRoute(directionsService, directionsDisplay) {
+                    var waypts = [];
+                    waypts.push({
+                        location: viaLatLng,
+                        stopover: true
+                    });
 
+                    directionsService.route({
+                        origin: fromLatLng,
+                        destination: toLatLng,
+                        waypoints: waypts,
+                        optimizeWaypoints: true,
+                        travelMode: google.maps.TravelMode.DRIVING
+                    }, function(response, status) {
+                        if (status === google.maps.DirectionsStatus.OK) {
+                            directionsDisplay.setDirections(response);
+                        } else {
+                            window.alert('Directions request failed due to ' + status);
+                        }
+                    });
+                }
+
+                // set route start ---------- Seemattstrasse
+                var fromLatLng = new google.maps.LatLng(47.174322,8.452194);
+
+                // set route target ---------- Hofstrasse
+                var toLatLng = new google.maps.LatLng(47.161751,8.516463);
+
+                // set waypoint ---------- Kantonsspital
+                var viaLatLng = new google.maps.LatLng(47.194340,8.518418);
+
+                // build map with route ----------
+                initMap();
+
+            }); // end document.ready function
         </script>
     </body>
 </html>
